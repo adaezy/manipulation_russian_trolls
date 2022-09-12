@@ -7,19 +7,19 @@ We also have tweets of Legitimate users who mention the trolls. We assume that e
 with one or more tweets, every prior tweet and responses from legitimate user is a part of the history of subsequent reply of user A.
 
 ### How to Run Code- Run in this sequence from the scripts folder
-get_all_trolls_tweets.py
-get_author_ids_from_trolls.py
-russia_trolls_analyis.py
-tweet_cleaner.py
-hashtag_count_retriever_script.py
-retrieve_counts_trolls_hashtags.sh 
-retrieve_counts_legitimate_hashtags.sh
-collect_count_hashtags_from_files.py
-clean_up_counts_hashtags.py(optional,only if missing rows occur)
-clean_popularity.py
-add_all_features.py
-get_history.py
-add_all_history.py
+*get_all_trolls_tweets.py
+*get_author_ids_from_trolls.py
+*russia_trolls_analyis.py
+*tweet_cleaner.py
+*hashtag_count_retriever_script.py
+*retrieve_counts_trolls_hashtags.sh 
+*retrieve_counts_legitimate_hashtags.sh
+*collect_count_hashtags_from_files.py
+*clean_up_counts_hashtags.py(optional,only if missing rows occur)
+*clean_popularity.py
+*add_all_features.py
+*get_history.py
+*add_all_history.py
 
 #### Note
 When you run the script retrieve_counts_legitimate_hashtags.sh and
