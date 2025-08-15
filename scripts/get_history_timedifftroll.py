@@ -13,15 +13,11 @@ keys_group = list(all_groups.keys())
 columns_add = final_data.columns.to_list()
 create_new_data = pd.DataFrame(columns=columns_add)
 
-# print(keys_group)
-# print(len(keys_group))
 
 for i in keys_group:
     various_grps = all_groups[i]
-    #print(various_grps)
     #concat by groups
     create_new_data = pd.concat([create_new_data,various_grps])
-    #print(create_new_data)
 
 
 def binary_search(arr, val):
@@ -54,7 +50,8 @@ length_user_history = {}
 
 history_df_subset["troll_publish_date"] = pd.to_datetime(history_df_subset["troll_publish_date"])
 history_df_subset["created_at"] = pd.to_datetime(history_df_subset["created_at"])
-
+history_df_subset["date_diff"] =  (history_df_subset["created_at"] - history_df_subset["troll_publish_date"]).dt.total_seconds()
+print(history_df_subset)
 """
 In creating the troll history, the troll tweeted before the reply from user. Hence in every row,we add the index for that
 row to represent the troll tweet that came before a reply. So for example for same troll id, if we have
@@ -76,7 +73,6 @@ for i in keys_group:
         index_users = troll_group.index.to_list()
 
         len_users = len(index_users)
-
         for user in range(len_users):
             user_interested = time_users[user]
             #print("user", user, user_interested)
@@ -100,36 +96,16 @@ for i in keys_group:
         user_group = various_grps.sort_values(by=["created_at"])
         index_users_new = user_group.index.to_list()
         time_users_new = user_group.created_at.to_list()
-        print("index_users_new",index_users_new)
 
         # Find the current user by id
         for user in range(len_users):
-
             user_interested = time_users_new[user]
             pos = binary_search(time_users_new, user_interested)
-            #print("pos",pos,"time_users_new", time_users_new)
-            #print("user_interested", user_interested)
-            #print("index_users_new",index_users_new)
             # Add all history of users before this current user
-
-
             ind_list_new = index_users_new[:pos]
             user_history_dict[index_users_new[user]] = ind_list_new
-            # if index_users_new == [33, 40, 48, 47]:
-            #     print("here")
-            #     print("user_history", user_history_dict[index_users_new[user]])
-            #     print("index_users_new_user", index_users_new[user])
-            #     print("user_history_dict",user_history_dict)
-            #     print()
-            #     time.sleep(15)
-            #print("user_history", user_history_dict[index_users_new[user]])
-            #print("index_users_new_user", index_users_new[user])
-            #print("user",user)
             count_user_hist = len(ind_list_new)
             length_user_history[index_users_new[user]] = count_user_hist
-
-
-            #print(" ")
 
     else:
         #use only troll history
@@ -182,45 +158,42 @@ for gp in keys_group:
 
 
 troll_history = pd.DataFrame(troll_history_dict.items())
-troll_history.sort_values(by=0,inplace=True)
 troll_history.set_index(0,inplace=True)
 
 user_history = pd.DataFrame(user_history_dict.items())
-user_history.sort_values(by= 0,inplace=True)
 user_history.set_index(0,inplace=True)
-#print(user_history.iloc[40:55])
 
 time_before = pd.DataFrame(time_before_tweet.items())
-time_before.sort_values(by= 0,inplace=True)
 time_before.set_index(0,inplace=True)
 
 length_troll = pd.DataFrame(length_troll_history.items())
-length_troll.sort_values(by= 0,inplace=True)
 length_troll.set_index(0,inplace=True)
 
 length_user = pd.DataFrame(length_troll_history.items())
-length_user.sort_values(by= 0,inplace=True)
 length_user.set_index(0,inplace=True)
-
-
-create_new_data = create_new_data.sort_index()
-
-
 
 #Add the troll history
 create_new_data["troll_history_to_use"] = troll_history[1].to_list()
+
 #Add the user history
 create_new_data["user_history_to_use"] = user_history[1].to_list()
-#create_new_data.to_csv("../data/processed/final_data_005_err.csv")
 
 #Add the lengths of history
 create_new_data["troll_length_history"] = length_troll[1].to_list()
 create_new_data["legit_length_history"] = length_user[1].to_list()
 
 #Add the time difference
-create_new_data["time_before_tweet"] = time_before[1].to_list()
-create_new_data["time_before_tweet"]  = pd.to_datetime(create_new_data["time_before_tweet"])
-create_new_data["created_at"]  = pd.to_datetime(create_new_data["created_at"])
-create_new_data["date_diff"] = ((create_new_data["created_at"] - create_new_data["time_before_tweet"])).dt.total_seconds()
+#create_new_data["time_before_tweet"] = time_before[1].to_list()
+#create_new_data["time_before_tweet"]  = pd.to_datetime(create_new_data["time_before_tweet"])
+#create_new_data["created_at"]  = pd.to_datetime(create_new_data["created_at"])
+#create_new_data["date_diff"] = ((create_new_data["created_at"] - create_new_data["time_before_tweet"])).dt.total_seconds()
+create_new_data["date_diff"] = history_df_subset["date_diff"]
 create_new_data.sort_index(inplace=True)
+
+#history_df_subset["date_diff2"] = pd.read_csv("../data/processed/final_data_005_old.csv")["date_diff"]
+#print(history_df_subset[["date_diff","date_diff2"]])
+
+#print(history_df_subset['date_diff'].equals(history_df_subset['date_diff2']))
+
 create_new_data.to_csv("../data/processed/final_data_005.csv",index=False)
+#history_df_subset.to_csv("../data/processed/history_df_subset.csv",index=False)

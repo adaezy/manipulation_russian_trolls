@@ -1,10 +1,9 @@
+import time
+
 import pandas as pd
-import os
 import pymongo
-import pyarrow
-import numpy as np
 import bisect
-from distfit import distfit
+
 
 """
 Gets tweets  of legitimate users from mongo db and formats to way we can use.
@@ -179,6 +178,10 @@ for ind, rws in all_trolls_tweets.iterrows():
 #To do this , I sort the dates of tweets of the trolls, insert the dates of the legitmate user and
 #select the date before the inserted dates
 
+"""
+We look at conversations in which the trolls started and not the users
+"""
+
 legit_users_date = []
 for id, rw in legitimate_user_df_subset_explode.iterrows():
     legit_tweets_id = rw["referenced_tweets_id"]
@@ -187,16 +190,17 @@ for id, rw in legitimate_user_df_subset_explode.iterrows():
         add_sort = []
         new_sort = sorted(dictionary_trolls[legit_tweets_id])
         add_sort = new_sort
-        #print(add_sort)
+        print("Add_sort",add_sort)
         bisect.insort(add_sort,legit_date)
-        #print(add_sort)
+        print("Add_sort",add_sort)
         index_interest = add_sort.index(legit_date) - 1
-        #print(index_interest)
+        print("index_interest",index_interest)
         if index_interest > -1:
-            date_interest = add_sort[index_interest]
+            date_interest = add_sort[index_interest] #Taking the date before the created_date from legitimate users
         else:
             date_interest = -1
         legit_users_date.append(date_interest)
+        time.sleep(20)
     else:
         date_interest = -1
         legit_users_date.append(date_interest)
