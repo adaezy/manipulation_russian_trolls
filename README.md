@@ -1,4 +1,4 @@
-## Modeling the Russian Troll Manipulation as a Spiking Neuron(Ongoing)
+## Predicting Topic Engagement during Russian Troll Activity around the 2016 US Political Elections
 
 ### Project Description
 We model the interaction between trolls and legitimate users as a spiking neuron model. 
