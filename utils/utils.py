@@ -4,6 +4,8 @@ import operator
 import stat
 import os
 
+from distfit import distfit
+import numpy as np
 import nltk
 nltk.download('vader_lexicon')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
@@ -42,7 +44,7 @@ def get_integer_from_string(val):
 
 
 def convert_lambda(val):
-    return 1/(val/3600)
+    return (val/3600) #corrected data
 
 
 
@@ -52,3 +54,12 @@ def change_to_exec(somefile):
     """
     st = os.stat(somefile)
     os.chmod(somefile, st.st_mode | stat.S_IEXEC)
+
+
+def exponential_fit(data):
+    # Initialize
+    dist_expon = distfit(distr='expon',stats='wasserstein')
+    # Fit on data
+    dist_expon.fit_transform(np.array(data))
+    #dist_expon.plot()
+    return dist_expon.summary["scale"].to_list()[0]
